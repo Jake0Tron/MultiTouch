@@ -8,8 +8,7 @@ public class MultiTouchHandler : MonoBehaviour {
     public bool debug;
     public GameObject spawnItem;
 
-	public float persZoomSpd = 0.5f;
-	public float orthoZoomSpd = 0.5f;
+	public float coolDown = 0.05f;
 
 	// Use this for initialization
 	void Start () {
@@ -21,22 +20,40 @@ public class MultiTouchHandler : MonoBehaviour {
 	void Update () {
         var tapCount = Input.touchCount;
 
-		if (tapCount == 2)
+		for (var i = 0; i < tapCount; i++)
 		{
-			//get 2 touches
-			var touch1 = Input.GetTouch(0);
-			var touch2 = Input.GetTouch(1);
+			var touch = Input.GetTouch(i);
+			Vector3 fingerPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y));
 
-			Vector2 touch1prev = touch1.position - touch1.deltaPosition;
-			Vector2 touch2prev = touch2.position - touch2.deltaPosition;
+			//debugText.text = touch.position.x + " " + touch.position.y;
+			if (this.coolDown < 0.0f)
+			{
+				GameObject o = Instantiate(spawnItem, fingerPos, Quaternion.identity) as GameObject;
+				Rigidbody2D rb2 = o.GetComponent<Rigidbody2D>();
 
-			float prevTouchMag = (touch1prev - touch2prev).magnitude;
-			float touchDeltaMag = (touch1.position - touch2.position).magnitude;
+				o.transform.position = fingerPos;
 
-			float deltaMagDiff = (prevTouchMag - touchDeltaMag);
-
-			this.spawnItem.transform.localScale *= deltaMagDiff;
-
+				this.coolDown = 0.05f;
+			}
+			else
+			{
+				this.coolDown -= 0.01f;
+			}
 		}
+		if (Input.GetKey(KeyCode.Space))
+		{
+			if (this.coolDown < 0.0f)
+			{
+				GameObject o = (GameObject)Instantiate(spawnItem, (new Vector3(0 , 5, 0)), Quaternion.identity);
+				
+				this.coolDown = 0.05f;
+			}
+			else
+			{
+				this.coolDown -= 0.01f;
+			}
+		}
+
+
 	}
 }

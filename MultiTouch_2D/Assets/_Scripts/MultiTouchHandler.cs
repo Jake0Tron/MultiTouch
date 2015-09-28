@@ -28,12 +28,8 @@ public class MultiTouchHandler : MonoBehaviour {
 			//debugText.text = touch.position.x + " " + touch.position.y;
 			if (this.coolDown < 0.0f)
 			{
-				GameObject o = Instantiate(spawnItem, fingerPos, Quaternion.identity) as GameObject;
-				Rigidbody2D rb2 = o.GetComponent<Rigidbody2D>();
-
-				o.transform.position = fingerPos;
-
-				this.coolDown = 0.05f;
+				Instantiate(spawnItem, fingerPos, Quaternion.identity);
+				this.coolDown = 0.5f;
 			}
 			else
 			{

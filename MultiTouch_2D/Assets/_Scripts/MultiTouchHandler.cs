@@ -8,7 +8,8 @@ public class MultiTouchHandler : MonoBehaviour {
     public bool debug;
     public GameObject spawnItem;
 
-	public float coolDown = 0.05f;
+	public float persZoomSpd = 0.5f;
+	public float orthoZoomSpd = 0.5f;
 
 	// Use this for initialization
 	void Start () {
@@ -20,29 +21,22 @@ public class MultiTouchHandler : MonoBehaviour {
 	void Update () {
         var tapCount = Input.touchCount;
 
-        for (var i = 0; i < tapCount; i++)
-        {
-            var touch = Input.GetTouch(i);
-			Vector3 fingerPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x,touch.position.y));
-
-			//debugText.text = touch.position.x + " " + touch.position.y;
-			if (this.coolDown < 0.0f)
-			{
-				Instantiate(spawnItem, fingerPos, Quaternion.identity);
-				this.coolDown = 0.05f;
-			}
-			else
-			{
-				this.coolDown -= 0.01f;
-			}
-
-            
-        }
-
-		if (Input.GetKeyDown(KeyCode.Space))
+		if (tapCount == 2)
 		{
-			Instantiate(spawnItem, Camera.main.ScreenToWorldPoint(new Vector3(100,100)), Quaternion.identity);
-		}
+			//get 2 touches
+			var touch1 = Input.GetTouch(0);
+			var touch2 = Input.GetTouch(1);
 
+			Vector2 touch1prev = touch1.position - touch1.deltaPosition;
+			Vector2 touch2prev = touch2.position - touch2.deltaPosition;
+
+			float prevTouchMag = (touch1prev - touch2prev).magnitude;
+			float touchDeltaMag = (touch1.position - touch2.position).magnitude;
+
+			float deltaMagDiff = (prevTouchMag - touchDeltaMag);
+
+			this.spawnItem.transform.localScale *= deltaMagDiff;
+
+		}
 	}
 }

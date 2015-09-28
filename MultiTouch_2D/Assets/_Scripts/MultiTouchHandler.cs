@@ -6,7 +6,7 @@ public class MultiTouchHandler : MonoBehaviour {
 
     public Text debugText;
     public bool debug;
-    public GameObject spawnItem;
+    public GameObject[] spawnItems;
 
 	public float coolDown = 0.05f;
 
@@ -28,8 +28,9 @@ public class MultiTouchHandler : MonoBehaviour {
 			//debugText.text = touch.position.x + " " + touch.position.y;
 			if (this.coolDown < 0.0f)
 			{
-				Instantiate(spawnItem, fingerPos, Quaternion.identity);
-				this.coolDown = 0.5f;
+				int r = Random.Range(0, spawnItems.Length);
+				Instantiate(spawnItems[r], fingerPos, Quaternion.identity);
+				this.coolDown = 0.05f;
 			}
 			else
 			{
@@ -40,7 +41,8 @@ public class MultiTouchHandler : MonoBehaviour {
 		{
 			if (this.coolDown < 0.0f)
 			{
-				GameObject o = (GameObject)Instantiate(spawnItem, (new Vector3(0 , 5, 0)), Quaternion.identity);
+				int r = Random.Range(0, spawnItems.Length);
+				GameObject o = (GameObject)Instantiate(spawnItems[r], (new Vector3(Random.Range(-4f,4f) , Random.Range(-3f,3f), 0)), Quaternion.identity);
 				
 				this.coolDown = 0.05f;
 			}
